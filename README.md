@@ -1,4 +1,5 @@
 # test3
+![home](./assets/accounts.png)
 
 This Flutter-based mobile banking app allows users to view account details and transactions. 
 It has three main screens: the Welcome Screen, Account List Screen, and Transaction Details Screen.

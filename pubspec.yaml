@@ -92,3 +92,4 @@ flutter:
 assets:
   - assets/accounts.json
   - assets/bank_logo.png
+  - assets/transaction.json

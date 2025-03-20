@@ -79,14 +79,14 @@ class _AccountListScreenState extends State<AccountListScreen> {
           var account = accounts[index];
           return Card(
             child: ListTile(
-              title: Text(account['accountName']),
+              title: Text(account['type']),
               subtitle: Text('Balance: \$${account['balance']}'),
               trailing: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TransactionDetailsScreen(account: account),
+                      builder: (context) => TransactionDetailsScreen(accountType: account['type']),
                     ),
                   );
                 },
@@ -100,18 +100,40 @@ class _AccountListScreenState extends State<AccountListScreen> {
   }
 }
 
-class TransactionDetailsScreen extends StatelessWidget {
-  final Map account;
+class TransactionDetailsScreen extends StatefulWidget {
+  final String accountType;
 
-  TransactionDetailsScreen({required this.account});
+  TransactionDetailsScreen({required this.accountType});
+
+  @override
+  _TransactionDetailsScreenState createState() => _TransactionDetailsScreenState();
+}
+
+class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
+  List transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadTransactions();
+  }
+
+  Future<void> loadTransactions() async {
+    String data = await rootBundle.loadString('assets/transactions.json');
+    Map<String, dynamic> transactionsData = json.decode(data)['transactions'];
+
+    setState(() {
+      transactions = transactionsData[widget.accountType] ?? [];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    List transactions = account['transactions'];
-
     return Scaffold(
-      appBar: AppBar(title: Text('${account['accountName']} Transactions')),
-      body: ListView.builder(
+      appBar: AppBar(title: Text('${widget.accountType} Transactions')),
+      body: transactions.isEmpty
+          ? Center(child: Text('No transactions available'))
+          : ListView.builder(
         itemCount: transactions.length,
         itemBuilder: (context, index) {
           var transaction = transactions[index];
