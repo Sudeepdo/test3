@@ -1,17 +1,22 @@
 # test3
 ![home](./assets/accounts.png)
+![home](./assets/img.png)
 
 This Flutter-based mobile banking app allows users to view account details and transactions. 
-It has three main screens: the Welcome Screen, Account List Screen, and Transaction Details Screen.
+It has three main screens: 
+1.The Welcome Screen
+2.Account List Screen
+3.Transaction Details Screen.
+
 The app loads data from a JSON file that contains account and transaction information.
 
-The Welcome Screen displays the bank's logo, a welcome message, and today's date. 
+1. The Welcome Screen displays the bank's logo, a welcome message, and today's date. 
 It allows users to navigate to the Account List. 
 
-The Account List Screen shows a list of accounts with details like account holder name, account ID,
+2. The Account List Screen shows a list of accounts with details like account holder name, account ID,
 and balance, and lets users select an account to view its transactions.
 
-The Transaction Details Screen displays the transactions of the selected account, including 
+3. The Transaction Details Screen displays the transactions of the selected account, including 
 transaction ID, date, amount, and type (Deposit/Withdrawal). Navigation is restricted: users can 
 only navigate back from the Transaction Details to the Account List, and from the Account List to 
 the Welcome Screen.
@@ -24,8 +29,10 @@ To run the app, clone the repository, install dependencies with flutter pub get,
 to launch the app.
 
 In this project we have add a  dependency in pubspec.yaml
-- assets/accounts.json and install pub get to install the dependency in our flutter project.
-We have make a assets directory in our flutter project and inside that we have created a accounts.json directory 
+- assets/accounts.json and assets/transaction.json and 
+- install pub get to install the dependency in our flutter project.
+
+- We have make a assets directory in our flutter project and inside that we have created a accounts.json directory 
 - for the transcation, and account holder details.
 
 
