@@ -3,94 +3,87 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(BankingApp());
+  runApp(const BankingApp());
 }
 
 class BankingApp extends StatelessWidget {
+  const BankingApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Mobile Banking App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: WelcomeScreen(),
-    );
-  }
-}
-
-class WelcomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
-
-    return Scaffold(
-      appBar: AppBar(title: Text('Welcome')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.account_balance, size: 100, color: Colors.blue),
-            Text("Welcome to Your Bank", style: TextStyle(fontSize: 22)),
-            Text("Today's Date: $currentDate", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AccountListScreen()));
-              },
-              child: Text('View Accounts'),
-            ),
-          ],
-        ),
-      ),
+      home: const AccountListScreen(),
     );
   }
 }
 
 class AccountListScreen extends StatefulWidget {
+  const AccountListScreen({super.key});
+
   @override
   _AccountListScreenState createState() => _AccountListScreenState();
 }
 
 class _AccountListScreenState extends State<AccountListScreen> {
-  List accounts = [];
+  List<dynamic> accounts = [];
 
   @override
   void initState() {
     super.initState();
-    loadAccounts();
+    loadAccounts(); // Load accounts on initialization
   }
 
+  // This function loads and decodes the accounts.json file.
   Future<void> loadAccounts() async {
-    String data = await rootBundle.loadString('assets/accounts.json');
-    setState(() {
-      accounts = json.decode(data)['accounts'];
-    });
+    try {
+      // Load the JSON file from assets
+      String data = await rootBundle.loadString('assets/accounts.json');
+
+      // Decode the JSON string into a Map
+      Map<String, dynamic> jsonData = json.decode(data);
+
+      // Debug Print: Check the loaded JSON data
+      print("Accounts JSON: $jsonData");
+
+      // Update the accounts list safely
+      setState(() {
+        accounts = jsonData['accounts'] ?? [];
+      });
+    } catch (e) {
+      print("Error loading accounts: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Account List')),
+      appBar: AppBar(title: const Text('Bank Accounts')),
       body: accounts.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: accounts.length,
         itemBuilder: (context, index) {
           var account = accounts[index];
           return Card(
             child: ListTile(
-              title: Text(account['type']),
+              title: Text('${account['type']} - ${account['account_number']}'),
               subtitle: Text('Balance: \$${account['balance']}'),
               trailing: ElevatedButton(
+                child: const Text('Transactions'),
                 onPressed: () {
+                  // Navigate to the transactions screen for the selected account
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TransactionDetailsScreen(accountType: account['type']),
+                      builder: (context) => TransactionDetailsScreen(
+                        accountType: account['type'],
+                      ),
                     ),
                   );
                 },
-                child: Text('View Transactions'),
               ),
             ),
           );
@@ -102,29 +95,40 @@ class _AccountListScreenState extends State<AccountListScreen> {
 
 class TransactionDetailsScreen extends StatefulWidget {
   final String accountType;
-
-  TransactionDetailsScreen({required this.accountType});
+  const TransactionDetailsScreen({super.key, required this.accountType});
 
   @override
   _TransactionDetailsScreenState createState() => _TransactionDetailsScreenState();
 }
 
 class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
-  List transactions = [];
+  List<dynamic> transactions = [];
 
   @override
   void initState() {
     super.initState();
-    loadTransactions();
+    loadTransactions(); // Load transactions on initialization
   }
 
+  // This function loads and decodes the transactions.json file.
   Future<void> loadTransactions() async {
-    String data = await rootBundle.loadString('assets/transactions.json');
-    Map<String, dynamic> transactionsData = json.decode(data)['transactions'];
+    try {
+      // Load the JSON file from assets
+      String data = await rootBundle.loadString('assets/transactions.json');
 
-    setState(() {
-      transactions = transactionsData[widget.accountType] ?? [];
-    });
+      // Decode the JSON string into a Map
+      Map<String, dynamic> jsonData = json.decode(data);
+
+      // Debug Print: Check the loaded JSON data for the specific account type
+      print("Transactions JSON for ${widget.accountType}: $jsonData");
+
+      // Update the transactions list safely for the current account type
+      setState(() {
+        transactions = jsonData['transactions'][widget.accountType] ?? [];
+      });
+    } catch (e) {
+      print("Error loading transactions: $e");
+    }
   }
 
   @override
@@ -132,7 +136,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('${widget.accountType} Transactions')),
       body: transactions.isEmpty
-          ? Center(child: Text('No transactions available'))
+          ? const Center(child: Text('No transactions available'))
           : ListView.builder(
         itemCount: transactions.length,
         itemBuilder: (context, index) {
@@ -142,7 +146,9 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             subtitle: Text(transaction['date']),
             trailing: Text(
               '\$${transaction['amount']}',
-              style: TextStyle(color: transaction['amount'] < 0 ? Colors.red : Colors.green),
+              style: TextStyle(
+                color: transaction['amount'] < 0 ? Colors.red : Colors.green,
+              ),
             ),
           );
         },

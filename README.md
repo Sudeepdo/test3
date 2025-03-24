@@ -21,6 +21,28 @@ transaction ID, date, amount, and type (Deposit/Withdrawal). Navigation is restr
 only navigate back from the Transaction Details to the Account List, and from the Account List to 
 the Welcome Screen.
 
+
+**Key Files & Modifications**
+
+The main.dart file serves as the entry point for the Mobile Banking App. It 
+initializes the Flutter application, sets up the primary UI structure, and loads account data from
+a local JSON file.
+Key Functionalities:
+App Initialization: The BankingApp class is defined as a StatelessWidget and sets up the 
+MaterialApp with a title, theme, and the initial screen (AccountListScreen).
+
+- Account List Management: The AccountListScreen is a StatefulWidget that:
+Loads accounts.json from the assets folder using rootBundle.loadString().
+Parses the JSON data and stores it in a List of accounts.
+Displays the list of accounts in a ListView.builder.
+Provides a button to navigate to the transaction details screen for a selected account.
+
+- Transaction Details Management: The TransactionDetailsScreen:
+Loads transactions.json from the assets folder.
+Filters and displays transactions specific to the selected account.
+Uses color indicators to differentiate deposits (green) and withdrawals (red).
+
+**Short Introduction of the running of code**
 The app is built using Flutter, and the account and transaction data is stored in a accounts.json 
 file. The file structure includes models for accounts and transactions, along with screen files for
 each UI component.
@@ -34,6 +56,8 @@ In this project we have add a  dependency in pubspec.yaml
 
 - We have make a assets directory in our flutter project and inside that we have created a accounts.json directory 
 - for the transcation, and account holder details.
+
+
 
 
 
